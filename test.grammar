@@ -1,0 +1,13 @@
+S -> NP VP
+PP -> P NP
+NP -> Det N
+NP -> Det N PP
+NP -> 'I'
+VP -> V NP
+VP -> VP PP
+Det -> 'an'
+Det -> 'my'
+N -> 'elephant'
+N -> 'pajamas' 'statue' NP
+V -> 'shot'
+P -> 'in'
