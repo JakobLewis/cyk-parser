@@ -1,0 +1,17 @@
+S -> Det Nom
+Nom -> AP Nom
+AP -> Adv A
+Det -> 'a'
+Det -> 'an'
+Adv -> 'very'
+Adv -> 'extremely'
+AP -> 'heavy'
+AP -> 'orange'
+AP -> 'tall'
+A -> 'heavy'
+A -> 'orange'
+A -> 'tall'
+A -> 'muscular'
+Nom -> 'book'
+Nom -> 'orange'
+Nom -> 'man'

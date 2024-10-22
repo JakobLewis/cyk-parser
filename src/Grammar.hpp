@@ -4,7 +4,12 @@
 #include <vector>
 
 /**
- * Context-free Grammar Rule
+ * Context-free Grammar Rule type ; Maps single LHS symbol to multiple RHS
+ * symbols
+ *
+ * Chosen as it allows nice grouping of one key to multiple values for printing.
+ * A more efficient version might allow looking up values in the opposite
+ * direction for generating the table in the Parsing step.
  */
 typedef std::multimap<std::string, std::vector<std::string>> Grammar_Rules_t;
 
@@ -15,6 +20,7 @@ public:
   bool try_load(std::string file_path);
 };
 
+/** Specialised CFG form */
 class ChomskyNormalForm {
 public:
   Grammar_Rules_t rules;

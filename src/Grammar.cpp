@@ -83,6 +83,7 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
    */
 
   Grammar_Rules_t copy{grammar.rules};
+  rules.clear();
 
   /**
    * Replace start symbol with new start symbol
@@ -92,10 +93,9 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
    * when a CFG has no start symbol. I can't implement it today since this
    * assignment is already late :).
    */
-  if (rules.find("S0") == rules.end()) {
-    rules.insert(
-        std::make_pair(std::string{"S0"}, std::vector{std::string{"S"}}));
-  }
+
+  rules.insert(
+      std::make_pair(std::string{"S0"}, std::vector{std::string{"S"}}));
 
   /** Here we separate out terminal symbols on the RHS into their own unit
    * rules. I am not entirely sure why this is done.
@@ -130,8 +130,7 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
         std::string terminal_name{};
         do {
           terminal_name = "C" + std::to_string(constant_count++);
-        } while ((rules.find(terminal_name) != rules.end()) &&
-                 (copy.find(terminal_name) != copy.end()));
+        } while (copy.find(terminal_name) != copy.end());
 
         new_unit_terminals.insert(
             std::make_pair(terminal_value, terminal_name));
@@ -145,6 +144,7 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
   // Add newly generated rules to ruleset
   for (auto it = new_unit_terminals.begin(); it != new_unit_terminals.end();
        it++) {
+
     copy.insert(std::make_pair(std::string{it->second},
                                std::vector{std::string{it->first}}));
   }
@@ -168,9 +168,9 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
 
     auto combined_rule_name = [](auto &first_rule_name,
                                  auto &second_rule_name) {
-      std::string combigned_name{first_rule_name};
-      combigned_name += "_" + second_rule_name;
-      return combigned_name;
+      std::string combined_name{first_rule_name};
+      combined_name += "_" + second_rule_name;
+      return combined_name;
     };
 
     /** Scan through to see if any pairs of symbols have already been combined
@@ -191,18 +191,36 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
     /**
      * Create new composite rules until our current rule fits the form expected
      * in CNF.
+     *
+     * This has a higher time complexity than combining from the back but the
+     * switch is trivial and this makes the new rules easier to read in my
+     * opinion.
      */
     while (rhs.size() > 2) {
-      std::string first = rhs[rhs.size() - 1];
-      std::string second = rhs[rhs.size() - 2];
-      rhs.pop_back();
-      rhs.pop_back();
-      std::string combigned_name = combined_rule_name(first, second);
+      // Remove from back manually to preserve order
+      std::string first = rhs[0];
+      std::string second = rhs[1];
+      rhs.erase(rhs.begin());
+      rhs.erase(rhs.begin());
+      std::string combined_name = combined_rule_name(first, second);
 
-      this->rules.insert(std::pair(combigned_name, std::vector{first, second}));
-      rhs.push_back(combigned_name);
+      this->rules.insert(std::pair(combined_name, std::vector{first, second}));
+      rhs.insert(rhs.begin(), combined_name);
+    }
+
+    // Add the condensed rule
+    this->rules.insert(std::pair(lhs, rhs));
+  }
+
+#ifdef DEBUG
+  std::cout << std::endl;
+  for (auto it = rules.begin(); it != rules.end(); it++) {
+    std::cout << it->first << " -> " << std::endl;
+    for (size_t i = 0; i < it->second.size(); i++) {
+      std::cout << "  | " << it->second[i] << std::endl;
     }
   }
+#endif
 
   return true;
 }

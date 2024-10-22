@@ -8,6 +8,6 @@ VP -> VP PP
 Det -> 'an'
 Det -> 'my'
 N -> 'elephant'
-N -> 'pajamas' 'statue' NP
+N -> 'pajamas'
 V -> 'shot'
 P -> 'in'
