@@ -40,6 +40,7 @@ bool is_valid_cyk(std::string sentance, const ChomskyNormalForm &grammar) {
 
     if (table[i][i].size() == 0) {
       // Sentance contained unknown token
+      std::cerr << "Unknown token " << tokens[i] << std::endl;
       return false;
     }
   }

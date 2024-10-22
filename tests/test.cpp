@@ -53,5 +53,9 @@ int main() {
   test_grammar("grammar4.txt", "x x o , o o x + , x x x", false);
   test_grammar("grammar4.txt", "x x o , o o x , x x x badtoken", false);
 
+  // Try a sentance with a recursive start symbol
+  test_grammar("grammar5.txt", ". . . . .", true);
+  test_grammar("grammar5.txt", ".", true);
+
   return 0;
 }

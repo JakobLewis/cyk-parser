@@ -200,12 +200,21 @@ bool ChomskyNormalForm::try_from_CFG(const ContextFreeGrammar &grammar) {
       // Remove from back manually to preserve order
       std::string first = rhs[0];
       std::string second = rhs[1];
-      rhs.erase(rhs.begin());
-      rhs.erase(rhs.begin());
+      rhs.erase(rhs.begin(), rhs.begin() + 2);
+
+      /**
+       *  std::string first = rhs[rhs.size()-2];
+       *  std::string second = rhs[rhs.size()-1];
+       *  rhs.pop_back();
+       *  rhs.pop_back();
+       */
+
       std::string combined_name = combined_rule_name(first, second);
 
       this->rules.insert(std::pair(combined_name, std::vector{first, second}));
       rhs.insert(rhs.begin(), combined_name);
+
+      
     }
 
     // Add the condensed rule
